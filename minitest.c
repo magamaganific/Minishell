@@ -71,8 +71,7 @@ int	exec_count(char *prompt)
 		}
 		if (quotes == -1 && !c_is_space(prompt[i]) && !c_is_token(prompt[i]))
 		{
-			while (prompt[i]
-				&& (!c_is_space(prompt[i]) && !c_is_token(prompt[i])))
+			while (prompt[i] && (!c_is_space(prompt[i + 1]) && !c_is_token(prompt[i + 1])))
 				i++;
 			execs++;
 		}
