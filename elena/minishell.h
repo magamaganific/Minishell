@@ -19,7 +19,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
-# include "libft/libft.h"
+# include "Libft-42/libft.h"
 # include <fcntl.h> 
 
 
@@ -58,7 +58,7 @@ int		save_output(t_token *node);
 
 /* --------- ERRORES ----------*/
 void	error_bad_quoting(void);
-void	error_syntax(char *unexpected)
+void	error_syntax(char *unexpected);
 
 /* ---------- LIBERACIÓN DE MEMORIA ---------------*/
 void	free_token_list(t_token *command);
