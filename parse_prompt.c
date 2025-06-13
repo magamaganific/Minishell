@@ -84,14 +84,6 @@ int	save_output(t_token *node)
 	return (fd_out);
 }
 
-int		save_input (t_token *node)
-{
-	int	fd_in;
-
-	if (!ft_strcmp(node->value, ">"))
-		fd_in = 
-}
-
 void	parse_and_execute_prompt(char *prompt)
 {
 	char	*cleaned;
