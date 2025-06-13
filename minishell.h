@@ -20,6 +20,9 @@
 # include <readline/history.h>
 # include <signal.h>
 # include "libft/libft.h"
+# include <fcntl.h> 
+
+
 
 /*  -------- ESTRUCTURAS --------*/
 
@@ -51,12 +54,15 @@ int 	find_token_end(char *str, int i);
 void 	append_token(t_token **head, t_token *new_tok);
 t_token *tokenizer(char *cleaned);
 void	relativize_zones(t_token *tokens, char *cleaned);
+int		save_output(t_token *node);
 
 /* --------- ERRORES ----------*/
 void	error_bad_quoting(void);
+void	error_syntax(char *unexpected)
 
 /* ---------- LIBERACIÓN DE MEMORIA ---------------*/
 void	free_token_list(t_token *command);
+void	free_zones(t_zone *zone);
 void	free_split(char **split);
 
 #endif
