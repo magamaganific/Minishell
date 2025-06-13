@@ -53,7 +53,7 @@ void add_zone(t_token *token, t_zone *zone) // Añado el nodo al final de la lis
 	}
 }
 
-char *extract_token_value(char *str, int start, int end)
+char *extract_token_value(char *str, int start, int end) /*Muy interesante :O*/
 {
 	char *substr;
 

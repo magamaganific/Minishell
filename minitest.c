@@ -52,6 +52,7 @@ int fix_tokens(char *prompt, int i)
 	}
 	if (prompt[i] == '|')
 		return(i);
+	return(i);
 }
 
 int	exec_count(char *prompt)
@@ -80,6 +81,11 @@ int	exec_count(char *prompt)
 	return (execs);
 }
 
+void parse_prompts(t_prompt *exec, char *prompt)
+{
+	
+}
+
 void parse_and_execute_prompt(char *prompt)
 {
 	t_prompt	exec;
@@ -87,7 +93,7 @@ void parse_and_execute_prompt(char *prompt)
 	exec.parse = (t_execute *)malloc(exec_count(prompt) * sizeof(t_execute));
 	if (!exec.parse)
 		return ;
-	parse_prompt(exec);
+	parse_prompts(&exec, prompt);
 	free(exec.parse);
 }
 
