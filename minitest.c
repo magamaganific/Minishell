@@ -15,6 +15,45 @@ int c_is_space(int c)
 	return(0);
 }
 
+int quote_fix(int *quotes, int i, char *prompt, int *execs)
+{
+	static int prev_quote;
+
+	if (*quotes == 1 && prompt[i] == prev_quote)
+	{
+		while (prompt[i])
+		{
+			if (c_is_token(prompt[i]) || c_is_space(prompt[i]))
+			{
+				*execs = *execs + 1;
+				break ;
+			}
+			i++;
+		}
+		*quotes = -*quotes;
+		return (i);
+	}
+	if (*quotes == -1)
+	{
+		prev_quote = prompt[i];
+		*quotes = -*quotes;
+		return (i);
+	}
+	return(i);
+}
+
+int fix_tokens(char *prompt, int i)
+{
+	if (prompt[i] == '<' || prompt[i] == '>')
+	{
+		if (prompt[i] == prompt[i + 1])
+			return(i + 1);
+		return(i);
+	}
+	if (prompt[i] == '|')
+		return(i);
+}
+
 int	exec_count(char *prompt)
 {
 	int	i = -1;
@@ -24,22 +63,20 @@ int	exec_count(char *prompt)
 	while(prompt[++i])
 	{
 		if (prompt[i] == '"' || prompt[i] == '\'')
+			i = quote_fix(&quotes, i, prompt, &execs);
+		if (c_is_token(prompt[i]))
 		{
-			if (quotes == 1)
-			{
-				while (prompt[i] && c_is_token(prompt[i]) && c_is_space(prompt[i]));
-					i++;
-			}
-			quotes = -quotes;
+			i = fix_tokens(prompt, i);
+			execs++;
 		}
-		if (prompt[i] == ' ' && quotes == -1)
+		if (quotes == -1 && !c_is_space(prompt[i]) && !c_is_token(prompt[i]))
 		{
-			while (c_is_space(prompt[i + 1]))
+			while (prompt[i]
+				&& (!c_is_space(prompt[i]) && !c_is_token(prompt[i])))
 				i++;
 			execs++;
 		}
 	}
-	execs++;
 	printf("execs: %d\n", execs);
 	return (execs);
 }
