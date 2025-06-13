@@ -236,6 +236,17 @@ void	print_tokens(t_token *tokens)
 	}
 }
 
+void	free_zones(t_zone *zone)
+{
+	t_zone	*tmp;
+
+	while (zone)
+	{
+		tmp = zone->next;
+		free(zone);
+		zone = tmp;
+	}
+}
 
 void	free_token_list(t_token *command)
 {
@@ -245,11 +256,11 @@ void	free_token_list(t_token *command)
 	{
 		tmp = command->next;
 		free(command->value);
+		free_zones(command->zones);
 		free(command);
 		command = tmp;
 	}
 }
-
 
 size_t	ft_strlen(const char *str)
 {

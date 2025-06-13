@@ -64,7 +64,7 @@ void	parse_and_execute_prompt(char *prompt)
 	int		fd_out = STDOUT_FILENO;
 	t_token	*node;
 
-	cleaned = ft_strtrim(prompt, "\t\n\v\f\r"); // RESERVA MEMORIA CUIDADO !!!!
+	cleaned = ft_strtrim(prompt, "\t\n\v\f\r"); // RESERVA MEMORIA CUIDADO !!!! :)
 	if (!cleaned || cleaned[0] == '\0')
 	{
 		if (cleaned)
@@ -75,8 +75,9 @@ void	parse_and_execute_prompt(char *prompt)
 		return (error_bad_quoting()); // Checkea que las comillas estén bien cerradas (tanto simples como dobles), si no lo están lanza la siguiente línea para que se cierren
 	command = tokenizer(cleaned); // RESERVA MEMORIA, CUIDADO !!!: Rellena los tokens como nodos de la lista
 	relativize_zones(command);
-	free(cleaned);
-	node = command;
+	free(cleaned);  // :)
+	node = command; 
+	// A partir de aquí solo está reservada la memoria de lalista de tokens.  
 	while (node)
 	{
 		if (!ft_strcmp(node->value, ">") || !ft_strcmp(node->value, ">>"))
