@@ -53,7 +53,7 @@ void add_zone(t_token *token, t_zone *zone) // Añado el nodo al final de la lis
 	}
 }
 
-char *extract_token_value(char *str, int start, int end) /*Muy interesante :O*/
+char *extract_token_value(char *str, int start, int end) /*importante*/
 {
 	char *substr;
 
@@ -61,7 +61,7 @@ char *extract_token_value(char *str, int start, int end) /*Muy interesante :O*/
 	return (substr);
 }
 
-t_token *new_token(char *str, int start, int end)
+t_token *new_token(char *str, int start, int end) /*importante*/
 {
 	t_token *tok;
 
@@ -132,7 +132,7 @@ void append_token(t_token **head, t_token *new_tok)
 	}
 }
 
-t_token *tokenizer(char *cleaned)
+t_token *tokenizer(char *cleaned) /*importante*/
 {
 	t_token *tokens;
 	t_token *tok;
@@ -344,40 +344,40 @@ char	*ft_strnstr(const char *big, const char *little, size_t n)
 
 int main(void)
 {
-	char *test_cases = readline("test: ");
-	// 	// Caso de prueba original complejo
-	// 	"echo \"Hola que tal\"$USER'$USER' | grep 'Ele' > outfile >>hola \"lets'gooo' >ahora no redirige\" > \"pero ahora sii\"",
+	char *test_cases[] = {
+		// Caso de prueba original complejo
+		"echo \"Hola que tal\"$USER'$USER' | grep 'Ele' > outfile >>hola \"lets'gooo' >ahora no redirige\" > \"pero ahora sii\"",
 
-	// 	// Casos más complicados
-	// 	"echo \"$USER's profile\" >>file | cat <'data input'",
-	// 	"echo \"Inicio\"$MIDDLE'Fin'|grep \"pattern>'a'\" >> salida",
-	// 	"cmd1 < input1 | cmd2 \"text$VAR>'a'\" > 'output final'",
-	// 	"echo \"double'quoted'word\" 'single\"quoted\"part' | tee result",
-	// 	"echo 'quote>\"test\"' \"quote<'test'\" | sort > file",
-	// 	"ls -l | grep \"Jan 01\" >> log$DATE'tmp'",
-	// 	"echo \"$USER\"\"'$USER'\"'$HOME'",
-	// 	"echo \"start'$VAR'end\">file",
-	// 	"cmd arg1 \">>\" '<<' | another > 'file name with spaces.txt'",
-	// 	"echo 'Unmatched quote test > still counts' >>file"
-	// };
+		// Casos más complicados
+		"echo \"$USER's profile\" >>file | cat <'data input'",
+		"echo \"Inicio\"$MIDDLE'Fin'|grep \"pattern>'a'\" >> salida",
+		"cmd1 < input1 | cmd2 \"text$VAR>'a'\" > 'output final'",
+		"echo \"double'quoted'word\" 'single\"quoted\"part' | tee result",
+		"echo 'quote>\"test\"' \"quote<'test'\" | sort > file",
+		"ls -l | grep \"Jan 01\" >> log$DATE'tmp'",
+		"echo \"$USER\"\"'$USER'\"'$HOME'",
+		"echo \"start'$VAR'end\">file",
+		"cmd arg1 \">>\" '<<' | another > 'file name with spaces.txt'",
+		"echo 'Unmatched quote test > still counts' >>file"
+	};
 
-	// int num_cases = sizeof(test_cases) / sizeof(test_cases[0]);
-	// for (int i = 0; i < num_cases; i++)
-	// {
-	// 	printf("=======================================================================\n");
-	// 	printf("CASO %d:\n%s\n", i + 1, test_cases[i]);
-	// 	printf("=======================================================================\n");
-	// 	printf ("\n");
+	int num_cases = sizeof(test_cases) / sizeof(test_cases[0]);
+	for (int i = 0; i < num_cases; i++)
+	{
+		printf("=======================================================================\n");
+		printf("CASO %d:\n%s\n", i + 1, test_cases[i]);
+		printf("=======================================================================\n");
+		printf ("\n");
 		t_token *tokens = tokenizer(test_cases);
 		if (!tokens)
-		// {
+		{
 			fprintf(stderr, "Error al tokenizar el input");
-		// 	continue;
-		// }
+			continue;
+		}
 		relativize_zones(tokens, test_cases);
 		print_tokens(tokens);
 		free_token_list(tokens);
 		printf ("\n\n");
-	// }
+	}
 	return (0);
 }

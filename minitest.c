@@ -90,7 +90,7 @@ void parse_and_execute_prompt(char *prompt)
 {
 	t_prompt	exec;
 
-	exec.parse = (t_execute *)malloc(exec_count(prompt) * sizeof(t_execute));
+	exec.parse = (t_token *)malloc(exec_count(prompt) * sizeof(t_token));
 	if (!exec.parse)
 		return ;
 	parse_prompts(&exec, prompt);
