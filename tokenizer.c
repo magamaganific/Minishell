@@ -112,10 +112,10 @@ int find_token_end(char *str, int i)
 			if (str[i]) // Una posición más porque me interesa mantener la comilla de cierrre (siempre que no haya un '\0' despúes de ella)
 				i++;
 		}
-		else  // Si no hay coillas simplemente avanzo hasta espacio o metacaracter
+		else  // Si no hay comillas simplemente avanzo hasta espacio o metacaracter
 			i++;
 	}
-	return (i); //Ahora sé la posición donde terminar el token, ya puedo extraer la subcaena. 
+	return (i); //Ahora sé la posición donde terminar el token, ya puedo extraer la subcadena. 
 }
 
 void append_token(t_token **head, t_token *new_tok)
@@ -193,7 +193,7 @@ void	relativize_zones(t_token *tokens, char *cleaned) // Esta función pone el s
 	{
 		zone = curr->zones; // Apunto al primer nodo de la lista de zonas. 
 		pos = ft_strnstr(cleaned, curr->value, ft_strlen(base)); // Apunto a donde empiezan las comillas en mi prompt
-		if (!pos) // Si no hubiera zonas, porque no ha comillas. 
+		if (!pos) // Si no hubiera zonas, porque no haya comillas. 
 		{
 			curr = curr->next; 
 			continue;

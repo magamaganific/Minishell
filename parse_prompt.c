@@ -99,7 +99,7 @@ int handle_heredoc(t_token *node)
 	}
 	while (1)
 	{
-		line = readline("> "); // Volvemos a llamar a la funció realine para que salga por debajo la linea nueva 
+		line = readline("> "); // Volvemos a llamar a la función realine para que salga por debajo la linea nueva 
 		if (!line || !ft_strncmp(line, node->next->value, 1))
 		{
 			free(line);
