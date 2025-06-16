@@ -33,7 +33,7 @@ int	check_quotes(char *line)
 	int	dquote = 0;
 	int	i = 0;
 
-	while (line[i]) // Importante: al comparar con bash este no interpreta comillas simples o doble ssi ya están dentro de otras comillas simples o dobles
+	while (line[i]) // Importante: al comparar con bash este no interpreta comillas simples o doble si ya están dentro de otras comillas simples o dobles
 					// Por eso en los ifs se tiene en cuenta que " no esté en comilla simple y ' no esté en comilla doble (&& squote, &&dquote)
 	{
 		if (line[i] == '"' && squote == 0)
