@@ -12,10 +12,10 @@
 
 #include "minishell.h"
 
-int	main (int argc, char **argv, char **envp)
+int	main (int argc, char **argv)
 {
 	char	*prompt;
-	int		status;
+
 	if (argc != 1 || argv[1])
 		return (1);
 	while (1)

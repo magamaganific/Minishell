@@ -19,6 +19,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <string.h>
+# include <errno.h>
 # include "libft/libft.h"
 # include <fcntl.h> 
 
@@ -55,10 +57,12 @@ void 	append_token(t_token **head, t_token *new_tok);
 t_token *tokenizer(char *cleaned);
 void	relativize_zones(t_token *tokens, char *cleaned);
 int		save_output(t_token *node);
+int		save_input(t_token *node);
+int		handle_heredoc(t_token *node);
 
 /* --------- ERRORES ----------*/
 void	error_bad_quoting(void);
-void	error_syntax(char *unexpected)
+void	error_syntax(char *unexpected);
 
 /* ---------- LIBERACIÓN DE MEMORIA ---------------*/
 void	free_token_list(t_token *command);
