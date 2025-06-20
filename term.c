@@ -35,7 +35,7 @@ int main()
 	while (1)
 	{
         signal_handler(); //recoge las señales en vez del propio terminal
-		prompt = readline("minishell$ ");
+		prompt = readline("signaltest$ ");
 		if (!prompt)
 			break;
 		add_history(prompt);
