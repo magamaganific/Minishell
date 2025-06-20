@@ -55,6 +55,8 @@ void 	append_token(t_token **head, t_token *new_tok);
 t_token *tokenizer(char *cleaned);
 void	relativize_zones(t_token *tokens, char *cleaned);
 int		save_output(t_token *node);
+int		save_input(t_token *node);
+int		handle_heredoc(t_token *node);
 
 /* --------- ERRORES ----------*/
 void	error_bad_quoting(void);
