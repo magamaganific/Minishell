@@ -10,201 +10,101 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
 
-//// TODOS LOS VALUES DEL TOKEN LLEVAN ASOCIADAS RESERVAS DE MEMORIA !!!! CUIDADO !!!!
-
-int is_metachar(char c)
+static int	tokenize_metachar(char *cleaned, int *i, t_token **tokens)
 {
-	return (c == '|' || c == '<' || c == '>');
-}
+	t_token	*tok;
+	int		start;
 
-int is_quote(char c)
-{
-	return (c == '"' || c == '\'');
-}
-
-t_zone *create_zone(int start, int end, int expandable) // Creo el nodo con la zona 
-{
-	t_zone *zone;
-
-	zone = malloc(sizeof(t_zone));
-	if (!zone)
-		return (NULL);
-	zone->start = start+1; // Para saltarme la comilla del principio (ya he indicado si era expandible o no)
-	zone->end = end-1; // Para saltarme la comilla del final
-	zone->expandable = expandable;
-	zone->next = NULL;
-	return (zone);
-}
-
-void add_zone(t_token *token, t_zone *zone) // Añado el nodo al final de la lista 
-{
-	t_zone *curr;
-
-	if (!token->zones)
-		token->zones = zone;
-	else
-	{
-		curr = token->zones;
-		while (curr->next)
-			curr = curr->next;
-		curr->next = zone;
-	}
-}
-
-char *extract_token_value(char *str, int start, int end)
-{
-	char *substr;
-
-	substr = ft_substr(str, start, end - start);
-	return (substr);
-}
-
-t_token *new_token(char *str, int start, int end)
-{
-	t_token *tok;
-
-	tok = malloc(sizeof(t_token)); //Creo nodo 
-	if (!tok)
-		return (NULL);
-	tok->value = extract_token_value(str, start, end); //Extraigo subcaden
-	tok->zones = NULL;
-	tok->next = NULL;
-	return (tok);
-}
-
-int process_quoted_zone(char *str, int *i, t_token *tok) //Hay que pasar i como puntero para que se conserve su valor tras el paso por la función. 
-{
-	char quote;
-	int start;
-	int expandable;
-
-	quote = str[*i];  //Guardo el tipo de comilla 
-	start = *i; //Posición inicial de la zona entrecomillada
-	expandable = 0;
-	if (quote == '"')
-		expandable = 1; //Así indico que en esa zona debo expandir variables si las encuentro. 
+	start = *i;
 	(*i)++;
-	while (str[*i] && str[*i] != quote) // Avanzo hasta cierre de comilla.
+	if ((cleaned[start] == '<' || cleaned[start] == '>')
+		&& cleaned[*i] == cleaned[start])
 		(*i)++;
-	if (str[*i] == quote)
-	{
-		add_zone(tok, create_zone(start, *i, expandable)); //Añado la zona (la región entrecomillada)
-		(*i)++;
-	}
-	return (*i);
+	tok = new_token(cleaned, start, *i);
+	if (!tok)
+		return (-1);
+	append_token(tokens, tok);
+	return (0);
 }
 
-int find_token_end(char *str, int i)
+static int	tokenize_regular(char *cleaned, int *i, t_token **tokens)
 {
-	char quote;
+	t_token	*tok;
+	int		start;
+	int		end;
 
-	while (str[i] && str[i] != ' ' && !is_metachar(str[i]))
+	start = *i;
+	end = find_token_end(cleaned, *i);
+	tok = new_token(cleaned, start, end);
+	if (!tok)
+		return (-1);
+	while (*i < end)
 	{
-		if (is_quote(str[i])) //Tengo que tener en cuenta si está entre comillas o no. Si está entre comillas sigo avanzando hasta que se cierren. 
-		{
-			quote = str[i]; // Con esto indico si es comilla simple o comilla doble (me ahorro tener que declarar una variable para cada)
-			i++;
-			while (str[i] && str[i] != quote) //Avanzo hasta encontrar la comilla de cierre. 
-				i++;
-			if (str[i]) // Una posición más porque me interesa mantener la comilla de cierrre (siempre que no haya un '\0' despúes de ella)
-				i++;
-		}
-		else  // Si no hay coillas simplemente avanzo hasta espacio o metacaracter
-			i++;
+		if (is_quote(cleaned[*i]))
+			process_quoted_zone(cleaned, i, tok);
+		else
+			(*i)++;
 	}
-	return (i); //Ahora sé la posición donde terminar el token, ya puedo extraer la subcaena. 
+	append_token(tokens, tok);
+	return (0);
 }
 
-void append_token(t_token **head, t_token *new_tok)
+t_token	*tokenizer(char *cleaned)
 {
-	t_token *curr;
-
-	if (!*head) //Para el caso en el que la lista no está inicializada y es el primer nodo. 
-		*head = new_tok;
-	else
-	{
-		curr = *head;
-		while (curr->next)
-			curr = curr->next;
-		curr->next = new_tok;
-	}
-}
-
-t_token *tokenizer(char *cleaned)
-{
-	t_token *tokens;
-	t_token *tok;
-	int i;
-	int start;
+	t_token	*tokens;
+	int		i;
 
 	i = 0;
 	tokens = NULL;
 	while (cleaned[i])
 	{
-		while (cleaned[i] == ' ') // Me salto los espacios iniciales y si hay varios espacios juntos entre medias
+		while (cleaned[i] == ' ')
 			i++;
-		if (!cleaned[i]) //Para el caso en el que sólo haya espacios
-			break;
-		if (is_metachar(cleaned[i])) // Este if es para crear un token que sea solo el metacaracter
+		if (!cleaned[i])
+			break ;
+		if (is_metachar(cleaned[i]))
 		{
-			start = i;
-			i++;   // Me voy a la posición siguiente
-			if ((cleaned[start] == '<' || cleaned[start] == '>') && cleaned[i] == cleaned[start]) // Si es << >> salto dos posiciones
-				i++;
-			tok = new_token(cleaned, start, i); //Creo el token: start = posicion del metachar, i siguiente posición (o siguiente siguiente si >> o <<)
-			append_token(&tokens, tok); // lo pongo al final de la lista
-			continue; // Paso a siguiente iteración
+			if (tokenize_metachar(cleaned, &i, &tokens) == -1)
+				return (NULL);
+			continue ;
 		}
-		start = i;
-		tok = new_token(cleaned, start, find_token_end(cleaned, i)); //con find token end voy a avanzar hasta encontras espacio o metacaracter
-		if (!tok) //Por si falla el malloc
+		if (tokenize_regular(cleaned, &i, &tokens) == -1)
 			return (NULL);
-		while (i < find_token_end(cleaned, start)) //Este bucle es para extraer zonas en caso de que haya comillas. 
-		{
-			if (is_quote(cleaned[i]))
-				process_quoted_zone(cleaned, &i, tok);
-			else
-				i++;
-		}
-		append_token(&tokens, tok); // Añado el token al final de la lista. 
 	}
 	return (tokens);
 }
 
-
-
-#include <stdio.h>
-#include <stdlib.h>
-
-void	relativize_zones(t_token *tokens, char *cleaned) // Esta función pone el start y el end de las zonas en función del token, no del prompt. 
+static void	relativize_token_zones(t_token *curr, char *cleaned, char *base)
 {
-	t_token	*curr;
-	char	*base;
 	t_zone	*zone;
 	char	*pos;
 	int		diff;
+
+	pos = ft_strnstr(cleaned, curr->value, ft_strlen(base));
+	if (!pos)
+		return ;
+	diff = pos - base;
+	zone = curr->zones;
+	while (zone)
+	{
+		zone->start = zone->start - diff;
+		zone->end = zone->end - diff;
+		zone = zone->next;
+	}
+}
+
+void	relativize_zones(t_token *tokens, char *cleaned)
+{
+	t_token	*curr;
+	char	*base;
 
 	curr = tokens;
 	base = cleaned;
 	while (curr)
 	{
-		zone = curr->zones; // Apunto al primer nodo de la lista de zonas. 
-		pos = ft_strnstr(cleaned, curr->value, ft_strlen(base)); // Apunto a donde empiezan las comillas en mi prompt
-		if (!pos) // Si no hubiera zonas, porque no ha comillas. 
-		{
-			curr = curr->next; 
-			continue;
-		}
-		diff = pos - base; // Posición en la frase (se la tengo que restar para expresarla respecto a 0.)
-		while (zone)
-		{
-			zone->start = zone->start - diff;
-			zone->end = zone->end - diff;
-			zone = zone->next;
-		}
+		relativize_token_zones(curr, cleaned, base);
 		curr = curr->next;
 	}
 }

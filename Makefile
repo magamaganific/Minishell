@@ -15,7 +15,7 @@ NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-SRCS = minishell.c parse_prompt.c tokenizer.c errors.c free_mem_funcs.c
+SRCS = minishell.c parse_prompt.c tokenizer.c errors.c free_mem_funcs.c parsing_utils.c handle_inputs.c handle_outputs.c execs.c execs2.c execs3.c execs4.c tokenizer2.c tokenizer3.c
 
 OBJS = $(SRCS:.c=.o)
 

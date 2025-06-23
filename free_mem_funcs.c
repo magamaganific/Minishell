@@ -43,7 +43,7 @@ void	free_split(char **split)
 	int	i;
 
 	if (!split)
-		return;
+		return ;
 	i = 0;
 	while (split[i])
 	{
@@ -51,4 +51,18 @@ void	free_split(char **split)
 		i++;
 	}
 	free(split);
+}
+
+void	free_exec_units(t_exec_unit *units)
+{
+	int	i;
+
+	if (!units)
+		return ;
+	i = 0;
+	while (units[i].start)
+	{
+		i++;
+	}
+	free(units);
 }

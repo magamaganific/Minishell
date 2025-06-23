@@ -23,3 +23,13 @@ void	error_syntax(char *unexpected)
 	ft_putstr_fd(unexpected, 2);
 	ft_putstr_fd("'\n", 2);
 }
+
+void	error_pipe_creation(void)
+{
+	ft_putstr_fd("minishell: error, could not create pipe", 2);
+}
+
+void	error_cmd_exec(void)
+{
+	ft_putstr_fd("minishell: error, could not execute command", 2);
+}

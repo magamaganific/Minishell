@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	main (int argc, char **argv)
+int	main(int argc, char **argv, char **envp)
 {
 	char	*prompt;
 
@@ -21,14 +21,17 @@ int	main (int argc, char **argv)
 	while (1)
 	{
 		prompt = readline("minishell$ ");
-		if (!prompt) // Esto puede suceder en dos casos: si hay un error de reserva con malloc o si se ha pulsado ctrl_d sin escribir nada;
-			break;	// Nota: al comparar con bash, si en bash pulsas CTRLD sin escribir nada es equivalente a un exit y te saca de la shell
-					// pero si pulsas ctrlD en mitad de un prompt no hace nada. 
+		if (!prompt)
+			break ;
 		add_history(prompt);
-		parse_and_execute_prompt(prompt); 
+		parse_and_execute_prompt(prompt, envp);
+		if (!ft_strncmp(prompt, "exit", 4))
+		{
+			free(prompt);
+			break ;
+		}
 		free(prompt);
 	}
 	clear_history();
 	return (0);
 }
-
