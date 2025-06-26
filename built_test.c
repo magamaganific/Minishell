@@ -21,43 +21,62 @@ void	signal_man(void)
 	signal(SIGTSTP, SIG_IGN);
 }
 
-t_env	*copy_env(char **env)
+size_t env_size(char **env)
 {
-	t_env	*copy = NULL;
-	
-	if (!env[0])
+	size_t i;
+
+	i = 0;
+	while(*env)
 	{
-		
-	}
-	while (*env)
-	{
-		copy->var_name = ft_strdup(*env);
-		copy->prev = copy;
-		copy = copy->next;
+		i++;
 		env++;
 	}
-	copy->next = head;
-	return (copy);
+	printf("\nsize = %zu\n", i);
+	return(i);
 }
 
-int	init_shell(char **av, t_shell *shell, char **env)
+int init_shell(char **av, t_shell *shell, char **env)
 {
-	(void)av;
-	g_signal.ret = 0;
-	shell->env = copy_env(env);
-	if (!shell->env)
-		return (0);
+	printf("\nInit_shell\n");
+	t_env	*head;
+	t_env	*prev;
+
+	shell->env = (t_env *)ft_calloc(sizeof(t_env), env_size(env) + 1);
+	shell->env->next = NULL;
+	head = shell->env;
+	while (*env)
+	{
+		head->var_name = *env;
+		printf("saved-> %s\n", head->var_name);
+		prev = head;
+		head->next = head + 1;
+		head++;
+		head->prev = prev;
+		env++;
+	}
+	printf("\nEnd_init\n");
 	return (1);
+}
+
+void free_env(t_env *env)
+{
+	while (env)
+	{
+		free(env->var_name);
+		env = env->next;
+	}
 }
 
 int main(int ac, char **av, char **env)
 {
 	char *line = NULL;
-	t_shell *shell = NULL;
+	t_shell shell;
 
-	printf("hello");
-	if (ac != 1 || !init_shell(av, shell, env))
+	if (ac != 1 || !init_shell(av, &shell, env))
+	{
+		free_env(shell.env);
 		printf("Error\n");
+	}
 	while (1)
 	{
 		signal_man();

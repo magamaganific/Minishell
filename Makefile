@@ -1,5 +1,5 @@
 NAME = built-ins
-CC = cc -Wall -Werror -Wextra -g3
+CC = cc -g3 #-Wall -Werror -Wextra#
 RLINE = -lreadline
 
 LIBDIR = libft
