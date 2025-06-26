@@ -51,7 +51,7 @@ clean:
 	@make clean -C $(PIPEX_DIR)
 
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(NAME) bonus.bonus
 	@make -C $(PRINTF_DIR) fclean
 	@make -C $(PIPEX_DIR) fclean
 

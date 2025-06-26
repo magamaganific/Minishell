@@ -17,29 +17,18 @@ NRM = \033[0m
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIB_OBJS)
+$(NAME): $(OBJS)
 	$(CC) $(OBJS) $(LIB_OBJS) $(PTR_OBJS) -o  $(NAME)
 	@echo "$(BP)\n-----Expected input: <infile> <\"cmd1\"> <\"cmd2\"> <outfile>-----\n$(NRM)"
-
-$(LIB_OBJS):
-	@make -C $(LIB_DIR)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-infile:
-	@echo "These are the infile contents\n\nHello world\n\nshould be useful" > infile
-
-delf:
-	$(RM) infile outfile
-
 clean: 
 	$(RM) $(OBJS) $(BOBJS)
-	@make clean -C $(LIB_DIR)
 
 fclean: clean
 	$(RM) $(NAME)
-	@make -C $(LIB_DIR) fclean
 
 re: fclean all
 
