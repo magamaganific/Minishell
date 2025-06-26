@@ -23,6 +23,7 @@
 # include <errno.h>
 # include "libft/libft.h"
 # include <fcntl.h> 
+# include <sys/wait.h>
 
 /*  -------- ESTRUCTURAS --------*/
 
