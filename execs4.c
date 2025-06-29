@@ -30,7 +30,8 @@ static pid_t	setup_pipe_and_fork(int *fd, int has_next)
 	return (pid);
 }
 
-static void	setup_child_io(t_exec_unit *unit, int *fd, int has_next, int prev_fd)
+static void	setup_child_io(t_exec_unit *unit, int *fd, int has_next,
+			int prev_fd)
 {
 	if (unit->fdin != STDIN_FILENO)
 	{
@@ -66,7 +67,7 @@ static void	handle_parent_pipe(int *fd, int *prev_fd, int has_next)
 	}
 }
 
-void	execute_units_with_pipes(t_exec_unit *units, char **envp)
+void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 {
 	int		i;
 	int		fd[2];
@@ -83,7 +84,7 @@ void	execute_units_with_pipes(t_exec_unit *units, char **envp)
 		if (pid == 0)
 		{
 			setup_child_io(&units[i], fd, units[i + 1].start != NULL, prev_fd);
-			exec_simple_command(units[i].start, envp);
+			exec_simple_command(units[i].start, my_envp);
 			perror("minishell: execve");
 			exit(1);
 		}
@@ -94,7 +95,7 @@ void	execute_units_with_pipes(t_exec_unit *units, char **envp)
 		;
 }
 
-void	exec_simple_command(t_token *start, char **envp)
+void	exec_simple_command(t_token *start, char **my_envp)
 {
 	char	**argv;
 	char	*path;
@@ -105,7 +106,7 @@ void	exec_simple_command(t_token *start, char **envp)
 		ft_putstr_fd("minishell: command not found\n", 2);
 		exit(127);
 	}
-	path = find_command_path(argv[0], envp);
+	path = find_command_path(argv[0], my_envp);
 	if (!path)
 	{
 		ft_putstr_fd("minishell: ", 2);
@@ -114,7 +115,7 @@ void	exec_simple_command(t_token *start, char **envp)
 		free_split(argv);
 		exit(127);
 	}
-	execve(path, argv, envp);
+	execve(path, argv, my_envp);
 	perror("minishell");
 	free_split(argv);
 	free(path);

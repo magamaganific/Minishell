@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-static int	is_redirection(t_token *token)
+int	is_redirection(t_token *token)
 {
 	if (!token)
 		return (0);
@@ -45,6 +45,8 @@ char	**build_argv(t_token *start)
 	int		i;
 
 	i = 0;
+	if (in_token(start->value, '='))
+		start = start->next;
 	while (start && is_redirection(start))
 		start = start->next->next;
 	n_args = count_args(start);
@@ -61,31 +63,31 @@ char	**build_argv(t_token *start)
 	return (argv);
 }
 
-static char	**get_path_array(char **envp)
+static char	**get_path_array(char **my_envp)
 {
 	int		i;
 	char	**paths;
 
 	i = 0;
-	while (envp[i] && ft_strncmp(envp[i], "PATH=", 5) != 0)
+	while (my_envp[i] && ft_strncmp(my_envp[i], "PATH=", 5) != 0)
 		i++;
-	if (!envp[i])
+	if (!my_envp[i])
 		return (NULL);
-	paths = ft_split(envp[i] + 5, ':');
+	paths = ft_split(my_envp[i] + 5, ':');
 	return (paths);
 }
 
-char	*find_command_path(char *cmd, char **envp)
+char	*find_command_path(char *cmd, char **my_envp)
 {
 	char	**paths;
 	char	*full_path;
 	int		i;
 
-	if (!cmd || !envp)
+	if (!cmd || !my_envp)
 		return (NULL);
 	if (access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
-	paths = get_path_array(envp);
+	paths = get_path_array(my_envp);
 	if (!paths)
 		return (NULL);
 	i = 0;

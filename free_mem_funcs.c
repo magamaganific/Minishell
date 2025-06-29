@@ -66,3 +66,16 @@ void	free_exec_units(t_exec_unit *units)
 	}
 	free(units);
 }
+
+void	free_env(char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env && env[i])
+	{
+		free(env[i]);
+		i++;
+	}
+	free(env);
+}

@@ -23,7 +23,6 @@
 # include <errno.h>
 # include "libft/libft.h"
 # include <fcntl.h> 
-# include <sys/wait.h>
 
 /*  -------- ESTRUCTURAS --------*/
 
@@ -69,9 +68,22 @@ int		handle_heredoc(t_token *node);
 void	clean_tokens(t_token *tokens);
 int		is_invalid_redirect(char *value);
 char	*ft_strjoin_gnl(char *s1, char *s2, size_t len1, size_t len2);
+void	expand_variables(t_token *command, char **my_envp);
+char	**copy_env(char **envp);
+void	extract_variable_name(t_token *node, char **my_envp);
+int		is_in_zones(int i, t_zone *zone);
+int		find_variable(t_token *node, int i, char **my_envp);
+void	replace_variable(t_token *node, int i, int j, char *replacement);
+char	*my_get_envp(char *variable, char **my_envp);
+int		add_variables_to_envp(t_token *command, char ***my_envp);
+char	**add_variable(char *addition, char **my_envp);
+int		not_in_zones(int i, t_zone *zone);
+int		in_token(char *value, char s);
+int		count_strings(char **envp);
+int		is_redirection(t_token *token);
 
 /* -------------- EJECUCIÓN ------------*/
-void		parse_and_execute_prompt(char *prompt, char **envp);
+void		parse_and_execute_prompt(char *prompt, char ***envp);
 void		execute_units_with_pipes(t_exec_unit *units, char **envp);
 void		exec_simple_command(t_token *start, char **envp);
 char		*find_command_path(char *cmd, char **envp);
@@ -90,5 +102,19 @@ void	free_token_list(t_token *command);
 void	free_zones(t_zone *zone);
 void	free_split(char **split);
 void	free_exec_units(t_exec_unit *units);
+void	free_env(char **env);
+
+/* -----------BUILT INS -------------------------*/
+int		execute_built_in(t_exec_unit *units, char ***my_envp);
+int		built_in_unset(t_exec_unit *unit, char ***my_envp);
+char	**remove_variable(char **my_envp, const char *varname);
+int		built_in_export(t_exec_unit *unit, char ***my_envp);
+int		export_variable(char ***my_envp, const char *new_var);
+int		built_in_cd(t_exec_unit *unit, char ***my_envp);
+int		built_in_env(t_exec_unit *units, char ***my_envp);
+int		built_in_echo(t_exec_unit *units);
+int		built_in_pwd(t_exec_unit *units);
+void	close_fds(t_exec_unit *units);
+void	built_in_exit(char *prompt);
 
 #endif

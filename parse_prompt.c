@@ -32,12 +32,15 @@ static char	*preprocess_prompt(char *prompt)
 }
 
 static t_exec_unit	*generate_command_and_units(t_token **command,
-												char *cleaned)
+					char *cleaned, char ***my_envp)
 {
 	t_exec_unit	*units;
 
 	*command = tokenizer(cleaned);
 	relativize_zones(*command, cleaned);
+	if (add_variables_to_envp(*command, my_envp))
+		return (NULL);
+	expand_variables(*command, *my_envp);
 	clean_tokens(*command);
 	free(cleaned);
 	units = split_into_exec_units(*command);
@@ -63,7 +66,7 @@ static int	validate_redirections(t_exec_unit *units, t_token *command)
 	return (0);
 }
 
-void	parse_and_execute_prompt(char *prompt, char **envp)
+void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 {
 	char		*cleaned;
 	t_token		*command;
@@ -72,12 +75,19 @@ void	parse_and_execute_prompt(char *prompt, char **envp)
 	cleaned = preprocess_prompt(prompt);
 	if (!cleaned)
 		return ;
-	units = generate_command_and_units(&command, cleaned);
+	units = generate_command_and_units(&command, cleaned, my_envp);
 	if (!units)
 		return ;
 	if (validate_redirections(units, command) == -1)
 		return ;
-	execute_units_with_pipes(units, envp);
+	if (execute_built_in(units, my_envp))
+	{
+		close_fds(units);
+		free_exec_units(units);
+		free_token_list(command);
+		return ;
+	}
+	execute_units_with_pipes(units, *my_envp);
 	free_exec_units(units);
 	free_token_list(command);
 }

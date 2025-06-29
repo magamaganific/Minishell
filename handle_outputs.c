@@ -53,4 +53,3 @@ int	save_output(t_token *node)
 	}
 	return (fd_out);
 }
-
