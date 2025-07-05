@@ -55,7 +55,6 @@ int	find_variable(t_token *node, int i, char **my_envp)
 	}
 	replace_variable(node, i, j, replacement);
 	free(variable);
-	free(replacement);
 	return (i + ft_strlen(replacement));
 }
 

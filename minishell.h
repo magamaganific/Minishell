@@ -23,8 +23,20 @@
 # include <errno.h>
 # include "libft/libft.h"
 # include <fcntl.h> 
+# include <sys/wait.h>
 
 /*  -------- ESTRUCTURAS --------*/
+
+typedef struct s_signal
+{
+	int	ret;
+	int	ret_exit;
+	int	sig;
+	int	ff;
+}	t_signal;
+
+extern	t_signal g_signal;
+
 
 typedef struct s_zone
 {
@@ -116,5 +128,10 @@ int		built_in_echo(t_exec_unit *units);
 int		built_in_pwd(t_exec_unit *units);
 void	close_fds(t_exec_unit *units);
 void	built_in_exit(char *prompt);
+
+/* ----------SIGNALS---------*/
+
+void	ft_handle_int(int sig);
+void	handle_signals(void);
 
 #endif

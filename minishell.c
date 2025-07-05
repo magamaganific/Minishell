@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+t_signal	g_signal;
+
 int	count_strings(char **envp)
 {
 	int	i;
@@ -72,6 +74,7 @@ int	main(int argc, char **argv, char **envp)
 	my_envp = copy_env(envp);
 	while (1)
 	{
+		handle_signals();
 		prompt = readline("minishell$ ");
 		if (!ft_strncmp(prompt, "exit", 4))
 		{
