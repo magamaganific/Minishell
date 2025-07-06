@@ -81,7 +81,13 @@ void	extract_variable_name(t_token *node, char **my_envp)
 		if (node->value[i] == '$'
 			&& is_in_zones(i, node->zones))
 		{
-			i = find_variable(node, i, my_envp);
+			if (node->value[i + 1] == '?' && node->value[i + 2] == 0)
+			{
+				replace_variable(node, i, i + 2, ft_itoa(g_signal.ret));
+				i = i + 1;
+			}
+			else
+				i = find_variable(node, i, my_envp);
 			continue ;
 		}
 		i++;
