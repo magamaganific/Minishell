@@ -70,6 +70,7 @@ static void	handle_parent_pipe(int *fd, int *prev_fd, int has_next)
 void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 {
 	int		i;
+	int		status;
 	int		fd[2];
 	int		prev_fd;
 	pid_t	pid;
@@ -91,8 +92,8 @@ void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 		handle_parent_pipe(fd, &prev_fd, units[i + 1].start != NULL);
 		i++;
 	}
-	while (wait(NULL) > 0)
-		;
+	while (wait(&status) > 0)
+		g_signal.ret = WEXITSTATUS(status);
 }
 
 void	exec_simple_command(t_token *start, char **my_envp)

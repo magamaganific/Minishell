@@ -25,6 +25,7 @@ int	built_in_unset(t_exec_unit *unit, char ***my_envp)
 			*my_envp = remove_variable(*my_envp, curr->value);
 		curr = curr->next;
 	}
+	g_signal.ret = 0;
 	return (1);
 }
 
@@ -75,5 +76,6 @@ int	built_in_cd(t_exec_unit *unit, char ***my_envp)
 		return (1);
 	export_variable(my_envp, pwd_var);
 	free(pwd_var);
+	g_signal.ret = 0;
 	return (1);
 }

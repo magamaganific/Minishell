@@ -36,6 +36,7 @@ int	built_in_pwd(t_exec_unit *units)
 	}
 	write(units->fdout, "\n", 1);
 	free(pwd);
+	g_signal.ret = 0;
 	return (1);
 }
 
@@ -62,6 +63,7 @@ int	built_in_echo(t_exec_unit *units)
 	}
 	if (endline)
 		write(units->fdout, "\n", 1);
+	g_signal.ret = 0;
 	return (1);
 }
 
@@ -79,5 +81,6 @@ int	built_in_env(t_exec_unit *units, char ***my_envp)
 		}
 		i++;
 	}
+	g_signal.ret = 0;
 	return (1);
 }

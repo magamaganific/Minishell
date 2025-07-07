@@ -62,6 +62,7 @@ int	built_in_export(t_exec_unit *unit, char ***my_envp)
 		}
 		curr = curr->next;
 	}
+	g_signal.ret = 0;
 	return (1);
 }
 

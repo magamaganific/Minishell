@@ -87,7 +87,8 @@ int	main(int argc, char **argv, char **envp)
 				break ;
 			}
 		}
-		add_history(prompt);
+		if (ft_strlen(prompt))
+			add_history(prompt);
 		parse_and_execute_prompt(prompt, &my_envp);
 		free(prompt);
 	}
