@@ -78,14 +78,11 @@ int	main(int argc, char **argv, char **envp)
 		prompt = readline("minishell$ ");
 		if (!prompt)
 			break ;
-		if (!ft_strncmp(prompt, "exit", 4))
+		if (!ft_strncmp(prompt, "exit", 5) || !ft_strncmp(prompt, "exit ", 5))
 		{
-			if (prompt[4] == '\0' || prompt[4] == ' ' )
-			{
-				built_in_exit(prompt);
-				free (prompt);
-				break ;
-			}
+			built_in_exit(prompt);
+			free (prompt);
+			break ;
 		}
 		if (ft_strlen(prompt))
 			add_history(prompt);
