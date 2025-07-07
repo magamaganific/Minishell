@@ -91,5 +91,4 @@ int	main(int argc, char **argv, char **envp)
 	}
 	clear_history();
 	free_split(my_envp);
-	return (0);
 }
