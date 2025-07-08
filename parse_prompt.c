@@ -37,6 +37,8 @@ static t_exec_unit	*generate_command_and_units(t_token **command,
 	t_exec_unit	*units;
 
 	*command = tokenizer(cleaned);
+	if (!*command)
+		return (NULL);
 	relativize_zones(*command, cleaned);
 	if (add_variables_to_envp(*command, my_envp))
 		return (NULL);

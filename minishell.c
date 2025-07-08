@@ -84,7 +84,7 @@ int	main(int argc, char **argv, char **envp)
 			free (prompt);
 			break ;
 		}
-		if (ft_strlen(prompt))
+		if (ft_strlen(prompt)) // bash no guarda linea vacías
 			add_history(prompt);
 		parse_and_execute_prompt(prompt, &my_envp);
 		free(prompt);

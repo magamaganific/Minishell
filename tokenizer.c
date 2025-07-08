@@ -58,6 +58,10 @@ t_token	*tokenizer(char *cleaned)
 
 	i = 0;
 	tokens = NULL;
+	while (cleaned[i] == ' ')
+		i++;
+	if (!cleaned[i])
+		return (NULL);
 	while (cleaned[i])
 	{
 		while (cleaned[i] == ' ')
