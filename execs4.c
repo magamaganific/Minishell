@@ -87,6 +87,7 @@ void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 			setup_child_io(&units[i], fd, units[i + 1].start != NULL, prev_fd);
 			exec_simple_command(units[i].start, my_envp);
 			free_env(my_envp);
+			free_exec_units(units);
 			exit(127);
 		}
 		handle_parent_pipe(fd, &prev_fd, units[i + 1].start != NULL);
@@ -102,7 +103,7 @@ void	exec_simple_command(t_token *start, char **my_envp)
 	char	*path;
 
 	argv = build_argv(start);
-	if (!argv || !argv[0] || !ft_strlen(argv[0]))
+	if (!argv || !argv[0])
 	{
 		ft_putstr_fd("minishell: command not found\n", 2);
 		return ;
@@ -115,11 +116,13 @@ void	exec_simple_command(t_token *start, char **my_envp)
 		ft_putstr_fd(": command not found\n", 2);
 		free_split(argv);
 		free(path);
+		free_token_list(start);
 		return ;
 	}
 	execve(path, argv, my_envp);
 	perror("minishell");
 	free_split(argv);
 	free(path);
-	exit(126);
+	free_token_list(start);
+	return ;
 }
