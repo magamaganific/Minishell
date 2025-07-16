@@ -101,6 +101,7 @@ char	*find_command_path(char *cmd, char **my_envp)
 		free(full_path);
 		i++;
 	}
+	dprintf(2, "estoy aqui\n"); //borrar
 	free_split(paths);
 	return (NULL);
 }
