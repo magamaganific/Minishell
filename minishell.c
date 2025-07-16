@@ -57,7 +57,7 @@ void	built_in_exit(char *prompt)
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(prompt, 2);
 		ft_putstr_fd(": ", 2);
-		ft_putstr_fd("numeric argument required", 2);
+		ft_putstr_fd("no argument required", 2);
 		ft_putstr_fd("\n", 2);
 	}
 	else
