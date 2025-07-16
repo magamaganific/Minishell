@@ -73,8 +73,8 @@ int	is_in_zones(int i, t_zone *zone)
 
 void	extract_variable_name(t_token *node, char **my_envp)
 {
-	int	i;
-	char *ret;
+	int		i;
+	char	*ret;
 
 	i = 0;
 	ret = ft_itoa(g_signal.ret);
