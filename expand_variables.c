@@ -74,8 +74,10 @@ int	is_in_zones(int i, t_zone *zone)
 void	extract_variable_name(t_token *node, char **my_envp)
 {
 	int	i;
+	char *ret;
 
 	i = 0;
+	ret = ft_itoa(g_signal.ret);
 	while (node->value[i])
 	{
 		if (node->value[i] == '$'
@@ -83,7 +85,7 @@ void	extract_variable_name(t_token *node, char **my_envp)
 		{
 			if (node->value[i + 1] == '?' && node->value[i + 2] == 0)
 			{
-				replace_variable(node, i, i + 2, ft_itoa(g_signal.ret));
+				replace_variable(node, i, i + 2, ret);
 				i = i + 1;
 			}
 			else
@@ -92,6 +94,7 @@ void	extract_variable_name(t_token *node, char **my_envp)
 		}
 		i++;
 	}
+	free(ret);
 }
 
 void	expand_variables(t_token *command, char **my_envp)
