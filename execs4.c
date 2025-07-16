@@ -75,9 +75,9 @@ void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 	int		prev_fd;
 	pid_t	pid;
 
-	i = 0;
+	i = -1;
 	prev_fd = -1;
-	while (units[i].start)
+	while (units[++i].start)
 	{
 		pid = setup_pipe_and_fork(fd, units[i + 1].start != NULL);
 		if (pid == -1)
@@ -91,7 +91,6 @@ void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 			exit(127);
 		}
 		handle_parent_pipe(fd, &prev_fd, units[i + 1].start != NULL);
-		i++;
 	}
 	while (wait(&status) > 0)
 		g_signal.ret = WEXITSTATUS(status);
@@ -123,6 +122,5 @@ void	exec_simple_command(t_token *start, char **my_envp)
 	perror("minishell");
 	free_split(argv);
 	free(path);
-	free_token_list(start);
-	return ;
+	return (free_token_list(start));
 }

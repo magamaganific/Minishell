@@ -28,7 +28,6 @@ void	free_token_list(t_token *command)
 {
 	t_token	*tmp;
 
-	dprintf(2, "estoy en la funcion\n"); //borrar
 	while (command)
 	{
 		tmp = command->next;
