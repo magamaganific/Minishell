@@ -12,13 +12,39 @@
 
 #include "minishell.h"
 
+void	ft_handle_int_empt(int sig)
+{
+	if (g_signal.ff == 1)
+		return ;
+	(void)sig;
+	rl_on_new_line();
+	rl_replace_line("", 1);
+	rl_redisplay();
+	g_signal.ret = 130;
+}
+void	ft_handle_int_heredoc(int sig)
+{
+	int	pipefd[2];
+
+	(void)sig;
+	if (pipe(pipefd) < 0)
+		perror("Pipe: ");
+	dup2(pipefd[0], STDIN_FILENO);
+	write(pipefd[1], "\n", 1);
+	close(pipefd[0]);
+	close(pipefd[1]);
+}
+void	ft_handle_int_in_p(int sig)
+{
+	(void)sig;
+	printf("\n");
+	g_signal.ret = 130;
+}
+
 void	ft_handle_int(int sig)
 {
 	if (g_signal.ff == 1)
-	{
-		printf("\n");
 		return ;
-	}
 	(void)sig;
 	printf("\n");
 	rl_on_new_line();

@@ -74,7 +74,6 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 	t_token		*command;
 	t_exec_unit	*units;
 
-	g_signal.ff = 1;
 	cleaned = preprocess_prompt(prompt);
 	if (!cleaned)
 		return ;
@@ -93,5 +92,4 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 	execute_units_with_pipes(units, *my_envp);
 	free_exec_units(units);
 	free_token_list(command);
-	g_signal.ff = 0;
 }

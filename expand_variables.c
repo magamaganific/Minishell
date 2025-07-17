@@ -77,7 +77,7 @@ void	extract_variable_name(t_token *node, char **my_envp)
 	char	*ret;
 
 	i = 0;
-	ret = ft_itoa(g_signal.ret);
+	ret = ft_find_ret();
 	while (node->value[i])
 	{
 		if (node->value[i] == '$'

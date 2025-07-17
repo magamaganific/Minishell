@@ -93,12 +93,12 @@ void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 		else
 		{
 			signal(SIGQUIT, SIG_IGN);
-			signal(SIGINT, SIG_IGN);
+			signal(SIGINT, ft_handle_int_in_p);
 		}
 		handle_parent_pipe(fd, &prev_fd, units[i + 1].start != NULL);
 	}
 	while (wait(&status) > 0)
-		g_signal.ret = WEXITSTATUS(status);
+		g_signal.ret_exit = WEXITSTATUS(status);
 }
 
 void	exec_simple_command(t_token *start, char **my_envp)

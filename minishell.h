@@ -131,5 +131,9 @@ void		built_in_exit(char *prompt);
 
 void		ft_handle_int(int sig);
 void		handle_signals(void);
+void		ft_handle_int_in_p(int sig);
+char		*ft_find_ret(void);
+void		ft_handle_int_heredoc(int sig);
+void		ft_handle_int_empt(int sig);
 
 #endif

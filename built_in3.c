@@ -79,3 +79,10 @@ int	built_in_cd(t_exec_unit *unit, char ***my_envp)
 	g_signal.ret = 0;
 	return (1);
 }
+
+char	*ft_find_ret(void)
+{
+	if (g_signal.ret)
+		return (ft_itoa(g_signal.ret));
+	return (ft_itoa(g_signal.ret_exit));
+}
