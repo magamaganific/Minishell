@@ -12,16 +12,13 @@
 
 #include "minishell.h"
 
-void	ft_handle_int_empt(int sig)
+void	ft_handle_quit(int sig)
 {
-	if (g_signal.ff == 1)
-		return ;
+	printf("Quit (Core dumped)\n");
 	(void)sig;
-	rl_on_new_line();
-	rl_replace_line("", 1);
-	rl_redisplay();
-	g_signal.ret = 130;
+	g_signal.ret = 131;
 }
+
 void	ft_handle_int_heredoc(int sig)
 {
 	int	pipefd[2];
@@ -33,7 +30,11 @@ void	ft_handle_int_heredoc(int sig)
 	write(pipefd[1], "\n", 1);
 	close(pipefd[0]);
 	close(pipefd[1]);
+	printf("\n");
+	g_signal.ret = 130;
+	exit(130);
 }
+
 void	ft_handle_int_in_p(int sig)
 {
 	(void)sig;

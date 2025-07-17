@@ -20,7 +20,7 @@ static int	is_delimiter(char *line, char *delim)
 	return (0);
 }
 
-static int	write_heredoc(t_token *node, char *filename)
+static void	write_heredoc(t_token *node, char *filename)
 {
 	int		fd_tmp;
 	char	*line;
@@ -29,10 +29,11 @@ static int	write_heredoc(t_token *node, char *filename)
 	if (fd_tmp < 0)
 	{
 		perror("minishell");
-		return (-1);
+		return ;
 	}
 	while (1)
 	{
+		signal(SIGINT, ft_handle_int_heredoc);
 		line = readline("> ");
 		if (!line)
 			break ;
@@ -46,20 +47,30 @@ static int	write_heredoc(t_token *node, char *filename)
 		free(line);
 	}
 	close(fd_tmp);
-	return (0);
+	return ;
 }
 
 int	handle_heredoc(t_token *node)
 {
 	int			fd_tmp;
+	int			status;
 	const char	*filename;
+	pid_t		pid;
 
 	filename = "/tmp/.heredoc_tmp";
-	if (write_heredoc(node, (char *)filename) < 0)
+	pid = fork();
+	if (pid == -1)
 		return (-1);
+	if (pid == 0)
+		write_heredoc(node, (char *)filename);
+	signal(SIGINT, ft_handle_int_in_p);
+	waitpid(pid, &status, 0);
 	fd_tmp = open(filename, O_RDONLY);
 	if (fd_tmp < 0)
 		perror("minishell");
+	g_signal.ret_exit = WEXITSTATUS(status);
+	if (g_signal.ret_exit == 130)
+		return (-1);
 	return (fd_tmp);
 }
 

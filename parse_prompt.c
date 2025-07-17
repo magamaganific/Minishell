@@ -68,6 +68,19 @@ static int	validate_redirections(t_exec_unit *units, t_token *command)
 	return (0);
 }
 
+static	int	check_end(t_exec_unit *units, t_token *command)
+{
+	if (is_redirection(units->start) && !units->start->next->next)
+	{
+		close_fds(units);
+		free_exec_units(units);
+		free_token_list(command);
+		return (0);
+	}
+	else
+		return (1);
+}
+
 void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 {
 	char		*cleaned;
@@ -81,6 +94,8 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 	if (!units)
 		return ;
 	if (validate_redirections(units, command) == -1)
+		return ;
+	if (!check_end (units, command))
 		return ;
 	if (execute_built_in(units, my_envp))
 	{

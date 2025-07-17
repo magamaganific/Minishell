@@ -84,17 +84,15 @@ void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 			return ;
 		else if (pid == 0)
 		{
+			signal(SIGQUIT, ft_handle_quit);
 			setup_child_io(&units[i], fd, units[i + 1].start != NULL, prev_fd);
 			exec_simple_command(units[i].start, my_envp);
 			free_env(my_envp);
 			free_exec_units(units);
 			exit(127);
 		}
-		else
-		{
-			signal(SIGQUIT, SIG_IGN);
-			signal(SIGINT, ft_handle_int_in_p);
-		}
+		signal(SIGQUIT, ft_handle_quit);
+		signal(SIGINT, ft_handle_int_in_p);
 		handle_parent_pipe(fd, &prev_fd, units[i + 1].start != NULL);
 	}
 	while (wait(&status) > 0)
