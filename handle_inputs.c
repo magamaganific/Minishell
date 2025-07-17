@@ -27,10 +27,7 @@ static void	write_heredoc(t_token *node, char *filename)
 
 	fd_tmp = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd_tmp < 0)
-	{
-		perror("minishell");
-		return ;
-	}
+		return (perror("minishell"));
 	while (1)
 	{
 		signal(SIGINT, ft_handle_int_heredoc);
