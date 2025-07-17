@@ -82,13 +82,18 @@ void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 		pid = setup_pipe_and_fork(fd, units[i + 1].start != NULL);
 		if (pid == -1)
 			return ;
-		if (pid == 0)
+		else if (pid == 0)
 		{
 			setup_child_io(&units[i], fd, units[i + 1].start != NULL, prev_fd);
 			exec_simple_command(units[i].start, my_envp);
 			free_env(my_envp);
 			free_exec_units(units);
 			exit(127);
+		}
+		else
+		{
+			signal(SIGQUIT, SIG_IGN);
+			signal(SIGINT, SIG_IGN);
 		}
 		handle_parent_pipe(fd, &prev_fd, units[i + 1].start != NULL);
 	}
