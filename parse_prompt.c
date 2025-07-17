@@ -105,6 +105,7 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 		return ;
 	}
 	execute_units_with_pipes(units, *my_envp);
+	close_fds(units);
 	free_exec_units(units);
 	free_token_list(command);
 }
