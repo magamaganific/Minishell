@@ -53,24 +53,26 @@ static void	write_heredoc(t_token *node, char *filename)
 int	handle_heredoc(t_token *node)
 {
 	int			fd_tmp;
-	int			status;
+	//int			status;
 	const char	*filename;
-	pid_t		pid;
+	//pid_t		pid;
 
 	filename = "/tmp/.heredoc_tmp";
-	pid = fork();
+	/*pid = fork();
 	if (pid == -1)
 		return (-1);
-	if (pid == 0)
+	//if (pid == 0)
 		write_heredoc(node, (char *)filename);
-	signal(SIGINT, ft_handle_int_in_p);
-	waitpid(pid, &status, 0);
+	//signal(SIGINT, ft_handle_int_in_p);
+	waitpid(pid, &status, 0)
+	*/
+	write_heredoc(node, (char *)filename);
 	fd_tmp = open(filename, O_RDONLY);
 	if (fd_tmp < 0)
 		perror("minishell");
-	g_signal.ret_exit = WEXITSTATUS(status);
-	if (g_signal.ret_exit == 130)
-		return (-1);
+	//g_signal.ret_exit = WEXITSTATUS(status);
+	//if (g_signal.ret_exit == 130)
+	//	return (-1);
 	return (fd_tmp);
 }
 

@@ -60,4 +60,3 @@ void	handle_signals(void)
 	signal(SIGINT, ft_handle_int);
 	signal(SIGTSTP, SIG_IGN);
 }
-

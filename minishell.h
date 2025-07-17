@@ -113,6 +113,7 @@ void		free_zones(t_zone *zone);
 void		free_split(char **split);
 void		free_exec_units(t_exec_unit *units);
 void		free_env(char **env);
+void		exit_child(char	***my_envp, t_exec_unit **units);
 
 /* -----------BUILT INS -------------------------*/
 int			execute_built_in(t_exec_unit *units, char ***my_envp);
@@ -135,5 +136,6 @@ void		ft_handle_int_in_p(int sig);
 char		*ft_find_ret(void);
 void		ft_handle_int_heredoc(int sig);
 void		ft_handle_quit(int sig);
+void		handle_child_signals(void);
 
 #endif

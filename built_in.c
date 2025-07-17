@@ -116,7 +116,8 @@ int	execute_built_in(t_exec_unit *units, char ***my_envp)
 		return (0);
 	if (in_token(units->start->value, '='))
 		units->start = units->start->next;
-	while (units->start && is_redirection(units->start) && units->start->next->next)
+	while (units->start && is_redirection(units->start)
+		&& units->start->next->next)
 		units->start = units->start->next->next;
 	if (!ft_strncmp(units->start->value, "pwd", 4))
 		return (built_in_pwd(units));
