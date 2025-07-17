@@ -27,10 +27,9 @@ void	ft_handle_int_heredoc(int sig)
 	if (pipe(pipefd) < 0)
 		perror("Pipe: ");
 	dup2(pipefd[0], STDIN_FILENO);
-	write(pipefd[1], "\n", 1);
+	write(pipefd[1], "\n\n", 2);
 	close(pipefd[0]);
 	close(pipefd[1]);
-	printf("\n");
 	g_signal.ret = 130;
 	exit(130);
 }
