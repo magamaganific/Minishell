@@ -31,6 +31,7 @@ int	save_output(t_token *node)
 {
 	int	fd_out;
 
+	fd_out = 0;
 	if (!node->next)
 	{
 		error_syntax("newline");
@@ -41,7 +42,6 @@ int	save_output(t_token *node)
 		error_syntax(node->next->value);
 		return (-1);
 	}
-	fd_out = open(node->next->value, O_CREAT | O_WRONLY, 0644);
 	if (!ft_strncmp(node->value, ">>", 3))
 		fd_out = open(node->next->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
 	else if (!ft_strncmp(node->value, ">", 2))

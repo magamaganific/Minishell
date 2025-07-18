@@ -25,12 +25,13 @@ static void	write_heredoc(t_token *node, char *filename)
 	int		fd_tmp;
 	char	*line;
 
+	signal(SIGINT, ft_handle_int_heredoc);
+	signal(SIGQUIT, SIG_IGN);
 	fd_tmp = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd_tmp < 0)
 		return (perror("minishell"));
 	while (1)
 	{
-		signal(SIGINT, ft_handle_int_heredoc);
 		line = readline("> ");
 		if (!line)
 			break ;
@@ -44,8 +45,6 @@ static void	write_heredoc(t_token *node, char *filename)
 		free(line);
 	}
 	close(fd_tmp);
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
 	exit(0);
 }
 
@@ -63,14 +62,17 @@ int	handle_heredoc(t_token *node)
 		return (-1);
 	if (pid == 0)
 		write_heredoc(node, (char *)filename);
-	signal(SIGINT, ft_handle_int_in_p);
+	signal(SIGINT, SIG_IGN);
 	waitpid(pid, &status, 0);
+	handle_signals();
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		g_signal.ret = 130;
+		return (-1);
+	}
 	fd_tmp = open(filename, O_RDONLY);
 	if (fd_tmp < 0)
 		perror("minishell");
-	g_signal.ret_exit = WEXITSTATUS(status);
-	if (g_signal.ret_exit == 130)
-		return (-1);
 	return (fd_tmp);
 }
 

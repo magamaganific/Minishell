@@ -14,6 +14,7 @@
 
 void	exit_child(char	***my_envp, t_exec_unit **units)
 {
+	close_fds(*units);
 	free_env(*my_envp);
 	free_exec_units(*units);
 	exit(127);

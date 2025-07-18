@@ -21,16 +21,8 @@ void	ft_handle_quit(int sig)
 
 void	ft_handle_int_heredoc(int sig)
 {
-	int	pipefd[2];
-
 	(void)sig;
-	if (pipe(pipefd) < 0)
-		perror("Pipe: ");
-	dup2(pipefd[0], STDIN_FILENO);
-	write(pipefd[1], "\n\n", 2);
-	close(pipefd[0]);
-	close(pipefd[1]);
-	g_signal.ret = 130;
+	write(STDIN_FILENO, "\n", 1);
 	exit(130);
 }
 

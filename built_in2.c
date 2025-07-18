@@ -14,10 +14,20 @@
 
 void	close_fds(t_exec_unit *units)
 {
-	if (units->fdin != 0)
-		close(units->fdin);
-	if (units->fdout != 1)
-		close(units->fdout);
+	int	i;
+
+	i = 0;
+	while (units[i].start)
+	{
+		if (units[i].fdin != 0)
+			close(units[i].fdin);
+		if (units[i].fdout != 1)
+		{		
+			close(units[i].fdout);
+			printf("n fd %d \n", units[i].fdout);
+		}
+		i++;
+	}
 }
 
 int	built_in_pwd(t_exec_unit *units)
