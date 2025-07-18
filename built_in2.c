@@ -22,7 +22,7 @@ void	close_fds(t_exec_unit *units)
 		if (units[i].fdin != 0)
 			close(units[i].fdin);
 		if (units[i].fdout != 1)
-		{		
+		{
 			close(units[i].fdout);
 			printf("n fd %d \n", units[i].fdout);
 		}

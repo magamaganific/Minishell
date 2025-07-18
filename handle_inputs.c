@@ -20,22 +20,22 @@ static int	is_delimiter(char *line, char *delim)
 	return (0);
 }
 
-static void	write_heredoc(t_token *node, char *filename)
+static void	write_heredoc(t_exec_unit *unit, int i, char **my_envp,
+	char *filename)
 {
 	int		fd_tmp;
 	char	*line;
 
-	signal(SIGINT, ft_handle_int_heredoc);
-	signal(SIGQUIT, SIG_IGN);
 	fd_tmp = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd_tmp < 0)
 		return (perror("minishell"));
 	while (1)
 	{
+		signal(SIGINT, ft_handle_int_heredoc);
 		line = readline("> ");
-		if (!line)
+		if (!line || g_signal.sig == 3)
 			break ;
-		if (is_delimiter(line, node->next->value))
+		if (is_delimiter(line, unit[i].start->next->value))
 		{
 			free(line);
 			break ;
@@ -45,10 +45,11 @@ static void	write_heredoc(t_token *node, char *filename)
 		free(line);
 	}
 	close(fd_tmp);
-	exit(0);
+	free_token_list(unit[i].start);
+	exit_heredoc(&my_envp, &unit);
 }
 
-int	handle_heredoc(t_token *node)
+int	handle_heredoc(t_exec_unit *unit, int i, char **my_envp)
 {
 	int			fd_tmp;
 	int			status;
@@ -61,8 +62,9 @@ int	handle_heredoc(t_token *node)
 	if (pid == -1)
 		return (-1);
 	if (pid == 0)
-		write_heredoc(node, (char *)filename);
-	signal(SIGINT, SIG_IGN);
+		write_heredoc(unit, i, my_envp, (char *)filename);
+	signal(SIGINT, ft_handle_int_in_p);
+	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, 0);
 	handle_signals();
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
@@ -93,21 +95,21 @@ static int	open_input_file(char *filename)
 	return (fd_in);
 }
 
-int	save_input(t_token *node)
+int	save_input(t_exec_unit *unit, int i, char **my_envp)
 {
-	if (!node->next)
+	if (!unit[i].start->next)
 	{
 		error_syntax("newline");
 		return (-1);
 	}
-	if (is_invalid_redirect(node->next->value))
+	if (is_invalid_redirect(unit[i].start->next->value))
 	{
-		error_syntax(node->next->value);
+		error_syntax(unit[i].start->next->value);
 		return (-1);
 	}
-	if (!ft_strncmp(node->value, "<<", 3))
-		return (handle_heredoc(node));
-	if (!ft_strncmp(node->value, "<", 2))
-		return (open_input_file(node->next->value));
+	if (!ft_strncmp(unit[i].start->value, "<<", 3))
+		return (handle_heredoc(unit, i, my_envp));
+	if (!ft_strncmp(unit[i].start->value, "<", 2))
+		return (open_input_file(unit[i].start->next->value));
 	return (-1);
 }

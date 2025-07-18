@@ -64,6 +64,14 @@ void	built_in_exit(char *prompt)
 		ft_printf("%s\n", "exit");
 }
 
+static void	close_extras(void)
+{
+	clear_history();
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(2);
+}
+
 int	main(int argc, char **argv, char **envp)
 {
 	char	*prompt;
@@ -81,7 +89,6 @@ int	main(int argc, char **argv, char **envp)
 		if (!ft_strncmp(prompt, "exit", 5) || !ft_strncmp(prompt, "exit ", 5))
 		{
 			built_in_exit(prompt);
-			free (prompt);
 			break ;
 		}
 		if (ft_strlen(prompt))
@@ -89,6 +96,7 @@ int	main(int argc, char **argv, char **envp)
 		parse_and_execute_prompt(prompt, &my_envp);
 		free(prompt);
 	}
-	clear_history();
+	free(prompt);
+	close_extras();
 	free_split(my_envp);
 }

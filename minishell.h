@@ -73,8 +73,8 @@ void		append_token(t_token **head, t_token *new_tok);
 t_token		*tokenizer(char *cleaned);
 void		relativize_zones(t_token *tokens, char *cleaned);
 int			save_output(t_token *node);
-int			save_input(t_token *node);
-int			handle_heredoc(t_token *node);
+int			save_input(t_exec_unit *unit, int i, char **my_envp);
+int			handle_heredoc(t_exec_unit *unit, int i, char **my_envp);
 void		clean_tokens(t_token *tokens);
 int			is_invalid_redirect(char *value);
 char		*ft_strjoin_gnl(char *s1, char *s2, size_t len1, size_t len2);
@@ -99,7 +99,7 @@ void		exec_simple_command(t_token *start, char **envp);
 char		*find_command_path(char *cmd, char **envp);
 char		**build_argv(t_token *start);
 int			count_args(t_token *start);
-int			handle_redirections(t_token *start, int *fdin, int *fdout);
+int			handle_redirections(t_exec_unit *unit, int i, char **my_envp);
 t_exec_unit	*split_into_exec_units(t_token *command);
 int			count_exec_units(t_token *command);
 
@@ -114,6 +114,7 @@ void		free_split(char **split);
 void		free_exec_units(t_exec_unit *units);
 void		free_env(char **env);
 void		exit_child(char	***my_envp, t_exec_unit **units);
+void		exit_heredoc(char	***my_envp, t_exec_unit **units);
 
 /* -----------BUILT INS -------------------------*/
 int			execute_built_in(t_exec_unit *units, char ***my_envp);

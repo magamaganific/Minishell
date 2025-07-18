@@ -21,9 +21,17 @@ void	ft_handle_quit(int sig)
 
 void	ft_handle_int_heredoc(int sig)
 {
+	int	fd[2];
+
 	(void)sig;
-	write(STDIN_FILENO, "\n", 1);
-	exit(130);
+	if (pipe(fd) < 0)
+		perror("Pipe:");
+	dup2(fd[0], STDIN_FILENO);
+	write(fd[1], "\n\n", 2);
+	close(fd[0]);
+	close(fd[1]);
+	g_signal.ret = 130;
+	return ;
 }
 
 void	ft_handle_int_in_p(int sig)
@@ -45,9 +53,11 @@ void	ft_handle_int(int sig)
 	g_signal.ret = 130;
 }
 
-void	handle_signals(void)
+void	ft_handle_sigquit(int sig)
 {
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGINT, ft_handle_int);
-	signal(SIGTSTP, SIG_IGN);
+	(void)sig;
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(2);
+	exit(0);
 }

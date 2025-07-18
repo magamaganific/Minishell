@@ -45,19 +45,21 @@ static t_exec_unit	*generate_command_and_units(t_token **command,
 	expand_variables(*command, *my_envp);
 	clean_tokens(*command);
 	free(cleaned);
+	if ((*command)->value[0] == '\0')
+		return (free_token_list(*command), NULL);
 	units = split_into_exec_units(*command);
 	return (units);
 }
 
-static int	validate_redirections(t_exec_unit *units, t_token *command)
+static int	validate_redirections(t_exec_unit *units, t_token *command,
+		char **my_envp)
 {
 	int	i;
 
 	i = 0;
 	while (units[i].start)
 	{
-		if (handle_redirections(units[i].start,
-				&units[i].fdin, &units[i].fdout) == -1)
+		if (handle_redirections(units, i, my_envp) == -1)
 		{
 			free_exec_units(units);
 			free_token_list(command);
@@ -93,7 +95,7 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 	units = generate_command_and_units(&command, cleaned, my_envp);
 	if (!units)
 		return ;
-	if (validate_redirections(units, command) == -1)
+	if (validate_redirections(units, command, *my_envp) == -1)
 		return ;
 	if (!check_end (units, command))
 		return ;

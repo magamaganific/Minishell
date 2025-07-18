@@ -20,33 +20,33 @@ static int	handle_output_redir(t_token *current, int *fdout)
 	return (0);
 }
 
-static int	handle_input_redir(t_token *current, int *fdin)
+static int	handle_input_redir(t_exec_unit *unit, int i, char **my_envp)
 {
-	*fdin = save_input(current);
-	if (*fdin == -1)
+	unit[i].fdin = save_input(unit, i, my_envp);
+	if (unit[i].fdin == -1)
 		return (-1);
 	return (0);
 }
 
-int	handle_redirections(t_token *start, int *fdin, int *fdout)
+int	handle_redirections(t_exec_unit *unit, int i, char **my_envp)
 {
 	t_token	*current;
 
-	current = start;
-	*fdin = 0;
-	*fdout = 1;
+	current = unit->start;
+	unit[i].fdin = 0;
+	unit[i].fdout = 1;
 	while (current && ft_strncmp(current->value, "|", 2))
 	{
 		if (!ft_strncmp(current->value, ">", 2)
 			|| !ft_strncmp(current->value, ">>", 3))
 		{
-			if (handle_output_redir(current, fdout) == -1)
+			if (handle_output_redir(current, &unit[i].fdout) == -1)
 				return (-1);
 		}
 		else if (!ft_strncmp(current->value, "<", 2)
 			|| !ft_strncmp(current->value, "<<", 3))
 		{
-			if (handle_input_redir(current, fdin) == -1)
+			if (handle_input_redir(unit, i, my_envp) == -1)
 				return (-1);
 		}
 		current = current->next;

@@ -19,7 +19,6 @@ SRCS = minishell.c aux.c parse_prompt.c tokenizer.c errors.c free_mem_funcs.c pa
 
 OBJS = $(SRCS:.c=.o)
 
-# Ruta a tu libft
 LIBFT_DIR = ./libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
