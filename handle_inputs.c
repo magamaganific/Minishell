@@ -25,17 +25,21 @@ static void	write_heredoc(t_exec_unit *unit, int i, char **my_envp,
 {
 	int		fd_tmp;
 	char	*line;
+	t_token	*current;
 
+	current = unit[i].start;
 	fd_tmp = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd_tmp < 0)
 		return (perror("minishell"));
+	while (!(current->value[0] == '<'))
+		current = current->next;
 	while (1)
 	{
 		signal(SIGINT, ft_handle_int_heredoc);
 		line = readline("> ");
 		if (!line || g_signal.sig == 3)
 			break ;
-		if (is_delimiter(line, unit[i].start->next->value))
+		if (is_delimiter(line, current->next->value))
 		{
 			free(line);
 			break ;
@@ -97,19 +101,24 @@ static int	open_input_file(char *filename)
 
 int	save_input(t_exec_unit *unit, int i, char **my_envp)
 {
-	if (!unit[i].start->next)
+	t_token	*current;
+
+	current = unit[i].start;
+	while (!(current->value[0] == '<'))
+		current = current->next;
+	if (!current->next)
 	{
 		error_syntax("newline");
 		return (-1);
 	}
-	if (is_invalid_redirect(unit[i].start->next->value))
+	if (is_invalid_redirect(current->next->value))
 	{
 		error_syntax(unit[i].start->next->value);
 		return (-1);
 	}
-	if (!ft_strncmp(unit[i].start->value, "<<", 3))
+	if (!ft_strncmp(current->value, "<<", 2))
 		return (handle_heredoc(unit, i, my_envp));
-	if (!ft_strncmp(unit[i].start->value, "<", 2))
-		return (open_input_file(unit[i].start->next->value));
+	if (!ft_strncmp(current->value, "<", 1))
+		return (open_input_file(current->next->value));
 	return (-1);
 }
