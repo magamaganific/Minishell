@@ -37,6 +37,7 @@ int	find_variable(t_token *node, int i, char **my_envp)
 	int		j;
 	char	*variable;
 	char	*replacement;
+	int		res;
 
 	j = i + 1;
 	while (node->value[j] && (ft_isalnum(node->value[j])
@@ -55,7 +56,8 @@ int	find_variable(t_token *node, int i, char **my_envp)
 	}
 	replace_variable(node, i, j, replacement);
 	free(variable);
-	return (i + ft_strlen(replacement));
+	res = i + ft_strlen(replacement);
+	return (free(replacement), res);
 }
 
 int	is_in_zones(int i, t_zone *zone)

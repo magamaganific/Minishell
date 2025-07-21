@@ -38,11 +38,27 @@ static int	is_argument_pipe(t_token *token)
 	return (1);
 }
 
+int	space_in(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == ' ')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 char	**build_argv(t_token *start)
 {
 	char	**argv;
 	int		n_args;
 	int		i;
+	char	**aux;
+	int		j;
 
 	i = 0;
 	if (in_token(start->value, '='))
@@ -55,6 +71,20 @@ char	**build_argv(t_token *start)
 		return (NULL);
 	while (start && is_argument_pipe(start))
 	{
+		if (space_in(start->value))
+		{
+			aux = ft_split(start->value, ' ');
+			j = 0;
+			while (aux[j])
+			{
+				argv[i] = ft_strdup(aux[j]);
+				j++;
+				i++;
+			}
+			free_split(aux);
+			start = start->next;
+			continue ;
+		}
 		argv[i] = ft_strdup(start->value);
 		i++;
 		start = start->next;
