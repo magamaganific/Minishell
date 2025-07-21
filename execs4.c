@@ -104,7 +104,8 @@ void	exec_simple_command(t_token *start, char **my_envp)
 	argv = build_argv(start);
 	if (!argv || !argv[0])
 	{
-		
+		if (argv)
+			free_split(argv);
 		return ;
 	}
 	path = find_command_path(argv[0], my_envp);
@@ -115,7 +116,6 @@ void	exec_simple_command(t_token *start, char **my_envp)
 		ft_putstr_fd(": command not found\n", 2);
 		free_split(argv);
 		free(path);
-		free_token_list(start);
 		return ;
 	}
 	execve(path, argv, my_envp);

@@ -49,7 +49,7 @@ static void	write_heredoc(t_exec_unit *unit, int i, char **my_envp,
 		free(line);
 	}
 	close(fd_tmp);
-	free_token_list(unit[i].start);
+	free_token_list(unit[0].start);
 	exit_heredoc(&my_envp, &unit);
 }
 

@@ -16,7 +16,8 @@ void	exit_child(char	***my_envp, t_exec_unit **units)
 {
 	close_fds(*units);
 	free_env(*my_envp);
-	free_exec_units(*units);
+	free_token_list(units[0]->start);
+	free_exec_units(units[0]);
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(2);
