@@ -74,11 +74,19 @@ static int	is_argument_token(t_token *token)
 int	count_args(t_token *start)
 {
 	int	count;
+	int	i;
 
 	count = 0;
 	while (start && is_argument_token(start))
 	{
 		count++;
+		i = 0;
+		while (start->value[i])
+		{
+			if (start->value[i] == ' ')
+				count++;
+			i++;
+		}
 		start = start->next;
 	}
 	return (count);
