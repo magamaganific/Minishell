@@ -49,7 +49,7 @@ int	built_in_export(t_exec_unit *unit, char ***my_envp)
 	if (curr && curr->value && !ft_strncmp(curr->value, "export", 7))
 		curr = curr->next;
 	if (!curr)
-		return (0);
+		return (1);
 	while (curr)
 	{
 		if (ft_strchr(curr->value, '='))
