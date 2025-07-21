@@ -51,6 +51,15 @@ int	space_in(char *str)
 	}
 	return (0);
 }
+static	int	check_end_unit(t_token *start)
+{
+	if (is_redirection(start) && ((!start->next->next) || start->next->next->value[0] == '|'))
+	{
+		return (1);
+	}
+	else
+		return (0);
+}
 
 char	**build_argv(t_token *start)
 {
@@ -63,6 +72,8 @@ char	**build_argv(t_token *start)
 	i = 0;
 	if (in_token(start->value, '='))
 		start = start->next;
+	if (check_end_unit (start))
+		return (NULL);
 	while (start && is_redirection(start))
 		start = start->next->next;
 	n_args = count_args(start);

@@ -72,8 +72,9 @@ static int	validate_redirections(t_exec_unit *units, t_token *command,
 
 static	int	check_end(t_exec_unit *units, t_token *command)
 {
-	if (is_redirection(units->start) && !units->start->next->next)
+	if (is_redirection(units->start) && (!units->start->next->next))
 	{
+		printf("hey\n");
 		close_fds(units);
 		free_exec_units(units);
 		free_token_list(command);
@@ -107,6 +108,7 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 		return ;
 	}
 	execute_units_with_pipes(units, *my_envp);
+	printf("%s\n", units->start->value);
 	close_fds(units);
 	free_exec_units(units);
 	free_token_list(command);

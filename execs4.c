@@ -104,7 +104,7 @@ void	exec_simple_command(t_token *start, char **my_envp)
 	argv = build_argv(start);
 	if (!argv || !argv[0])
 	{
-		ft_putstr_fd("minishell: command not found\n", 2);
+		
 		return ;
 	}
 	path = find_command_path(argv[0], my_envp);
