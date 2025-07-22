@@ -82,3 +82,10 @@ void	append_token(t_token **head, t_token *new_tok)
 		curr->next = new_tok;
 	}
 }
+
+void	write_fd(int fd_tmp, char *line)
+{
+	write(fd_tmp, line, ft_strlen(line));
+	write(fd_tmp, "\n", 1);
+	free(line);
+}

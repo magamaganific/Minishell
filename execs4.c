@@ -33,6 +33,7 @@ static pid_t	setup_pipe_and_fork(int *fd, int has_next)
 static void	setup_child_io(t_exec_unit *unit, int *fd, int has_next,
 			int prev_fd)
 {
+	signal(SIGQUIT, ft_handle_quit);
 	if (unit->fdin != STDIN_FILENO)
 	{
 		dup2(unit->fdin, STDIN_FILENO);
@@ -58,6 +59,7 @@ static void	setup_child_io(t_exec_unit *unit, int *fd, int has_next,
 
 static void	handle_parent_pipe(int *fd, int *prev_fd, int has_next)
 {
+	handle_child_signals();
 	if (*prev_fd != -1)
 		close(*prev_fd);
 	if (has_next)
@@ -67,7 +69,8 @@ static void	handle_parent_pipe(int *fd, int *prev_fd, int has_next)
 	}
 }
 
-void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
+void	execute_units_with_pipes(t_exec_unit *units, char **my_envp,
+		t_token **aux)
 {
 	int		i;
 	int		status;
@@ -84,12 +87,12 @@ void	execute_units_with_pipes(t_exec_unit *units, char **my_envp)
 			return ;
 		else if (pid == 0)
 		{
-			signal(SIGQUIT, ft_handle_quit);
 			setup_child_io(&units[i], fd, units[i + 1].start != NULL, prev_fd);
+			while (units[i].start->value[0] == '<')
+				units[i].start = units[i].start->next->next;
 			exec_simple_command(units[i].start, my_envp);
-			exit_child(&my_envp, &units);
+			exit_child(&my_envp, &units, aux);
 		}
-		handle_child_signals();
 		handle_parent_pipe(fd, &prev_fd, units[i + 1].start != NULL);
 	}
 	while (wait(&status) > 0)

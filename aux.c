@@ -12,8 +12,29 @@
 
 #include "minishell.h"
 
-void	exit_child(char	***my_envp, t_exec_unit **units)
+t_token	*go_to_token(t_exec_unit *unit, int j, int i)
 {
+	int		k;
+	t_token	*current;
+
+	current = unit[i].start;
+	k = 0;
+	while (current)
+	{
+		if (current->value[0] == '<')
+		{
+			k++;
+			if (k == j)
+				break ;
+		}
+		current = current->next;
+	}
+	return (current);
+}
+
+void	exit_child(char	***my_envp, t_exec_unit **units, t_token **aux)
+{
+	units[0]->start = *aux;
 	close_fds(*units);
 	free_env(*my_envp);
 	free_token_list(units[0]->start);
@@ -22,9 +43,6 @@ void	exit_child(char	***my_envp, t_exec_unit **units)
 	close(STDOUT_FILENO);
 	close(2);
 	exit(127);
-	// 	close_fds(units);
-	// free_exec_units(units);
-	// free_token_list(command);
 }
 
 void	exit_heredoc(char	***my_envp, t_exec_unit **units)

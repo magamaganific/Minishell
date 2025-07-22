@@ -12,6 +12,21 @@
 
 #include "minishell.h"
 
+int	is_redirection(t_token *token)
+{
+	if (!token)
+		return (0);
+	if (!ft_strncmp(token->value, "<", 2))
+		return (1);
+	if (!ft_strncmp(token->value, "<<", 3))
+		return (1);
+	if (!ft_strncmp(token->value, ">", 2))
+		return (1);
+	if (!ft_strncmp(token->value, ">>", 3))
+		return (1);
+	return (0);
+}
+
 void	close_fds(t_exec_unit *units)
 {
 	int	i;

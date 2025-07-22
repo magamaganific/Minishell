@@ -102,14 +102,10 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 		return ;
 	aux = units[0].start;
 	if (execute_built_in(units, my_envp))
-	{
-		close_fds(units);
-		free_exec_units(units);
-		free_token_list(command);
-		return ;
-	}
+		return (close_fds(units), free_exec_units(units),
+			free_token_list(command));
+	execute_units_with_pipes(units, *my_envp, &aux);
 	units[0].start = aux;
-	execute_units_with_pipes(units, *my_envp);
 	close_fds(units);
 	free_exec_units(units);
 	free_token_list(command);

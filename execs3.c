@@ -12,21 +12,6 @@
 
 #include "minishell.h"
 
-int	is_redirection(t_token *token)
-{
-	if (!token)
-		return (0);
-	if (!ft_strncmp(token->value, "<", 2))
-		return (1);
-	if (!ft_strncmp(token->value, "<<", 3))
-		return (1);
-	if (!ft_strncmp(token->value, ">", 2))
-		return (1);
-	if (!ft_strncmp(token->value, ">>", 3))
-		return (1);
-	return (0);
-}
-
 static int	is_argument_pipe(t_token *token)
 {
 	if (!token)
@@ -38,29 +23,6 @@ static int	is_argument_pipe(t_token *token)
 	return (1);
 }
 
-int	space_in(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == ' ')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-static	int	check_end_unit(t_token *start)
-{
-	if (is_redirection(start) && ((!start->next->next) || start->next->next->value[0] == '|'))
-	{
-		return (1);
-	}
-	else
-		return (0);
-}
-
 char	**build_argv(t_token *start)
 {
 	char	**argv;
@@ -69,16 +31,7 @@ char	**build_argv(t_token *start)
 	char	**aux;
 	int		j;
 
-	i = 0;
-	if (in_token(start->value, '='))
-		start = start->next;
-	if (check_end_unit (start))
-		return (NULL);
-	while (start && is_redirection(start))
-		start = start->next->next;
-	n_args = count_args(start);
-	argv = malloc(sizeof(char *) * (n_args + 1));
-	if (!argv)
+	if (!init_args(start, &n_args, &argv, &i))
 		return (NULL);
 	while (start && is_argument_pipe(start))
 	{
@@ -87,17 +40,12 @@ char	**build_argv(t_token *start)
 			aux = ft_split(start->value, ' ');
 			j = 0;
 			while (aux[j])
-			{
-				argv[i] = ft_strdup(aux[j]);
-				j++;
-				i++;
-			}
+				argv[i++] = ft_strdup(aux[j++]);
 			free_split(aux);
 			start = start->next;
 			continue ;
 		}
-		argv[i] = ft_strdup(start->value);
-		i++;
+		argv[i++] = ft_strdup(start->value);
 		start = start->next;
 	}
 	argv[i] = NULL;

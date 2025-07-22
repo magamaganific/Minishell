@@ -92,10 +92,12 @@ int			in_token(char *value, char s);
 int			count_strings(char **envp);
 int			is_redirection(t_token *token);
 t_token		*go_to_token(t_exec_unit *unit, int j, int i);
+int			space_in(char *str);
 
 /* -------------- EJECUCIÓN ------------*/
 void		parse_and_execute_prompt(char *prompt, char ***envp);
-void		execute_units_with_pipes(t_exec_unit *units, char **envp);
+void		execute_units_with_pipes(t_exec_unit *units, char **envp,
+				t_token **aux);
 void		exec_simple_command(t_token *start, char **envp);
 char		*find_command_path(char *cmd, char **envp);
 char		**build_argv(t_token *start);
@@ -103,6 +105,7 @@ int			count_args(t_token *start);
 int			handle_redirections(t_exec_unit *unit, int i, char **my_envp);
 t_exec_unit	*split_into_exec_units(t_token *command);
 int			count_exec_units(t_token *command);
+int			init_args(t_token *start, int	*n_args, char	***argv, int *i);
 
 /* --------- ERRORES ----------*/
 void		error_bad_quoting(void);
@@ -114,8 +117,9 @@ void		free_zones(t_zone *zone);
 void		free_split(char **split);
 void		free_exec_units(t_exec_unit *units);
 void		free_env(char **env);
-void		exit_child(char	***my_envp, t_exec_unit **units);
+void		exit_child(char	***my_envp, t_exec_unit **units, t_token **aux);
 void		exit_heredoc(char	***my_envp, t_exec_unit **units);
+void		write_fd(int fd_tmp, char *line);
 
 /* -----------BUILT INS -------------------------*/
 int			execute_built_in(t_exec_unit *units, char ***my_envp);

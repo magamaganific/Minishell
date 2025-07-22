@@ -53,3 +53,30 @@ int	save_output(t_token *node)
 	}
 	return (fd_out);
 }
+
+static	int	check_end_unit(t_token *start)
+{
+	if (is_redirection(start) && ((!start->next->next)
+			|| start->next->next->value[0] == '|'))
+	{
+		return (1);
+	}
+	else
+		return (0);
+}
+
+int	init_args(t_token *start, int	*n_args, char	***argv, int *i)
+{
+	*i = 0;
+	if (in_token(start->value, '='))
+		start = start->next;
+	if (check_end_unit (start))
+		return (0);
+	while (start && is_redirection(start))
+		start = start->next->next;
+	*n_args = count_args(start);
+	*argv = malloc(sizeof(char *) * (*n_args + 1));
+	if (!argv)
+		return (0);
+	return (1);
+}

@@ -44,13 +44,10 @@ static void	write_heredoc(t_exec_unit *unit, int i, char **my_envp,
 			free(line);
 			break ;
 		}
-		write(fd_tmp, line, ft_strlen(line));
-		write(fd_tmp, "\n", 1);
-		free(line);
+		write_fd(fd_tmp, line);
 	}
-	close(fd_tmp);
-	free_token_list(unit[0].start);
-	exit_heredoc(&my_envp, &unit);
+	return (close(fd_tmp), free_token_list(unit[0].start)
+		, exit_heredoc(&my_envp, &unit));
 }
 
 int	handle_heredoc(t_exec_unit *unit, int i, char **my_envp, int j)
@@ -95,26 +92,6 @@ static int	open_input_file(char *filename)
 		return (-1);
 	}
 	return (fd_in);
-}
-
-t_token	*go_to_token(t_exec_unit *unit, int j, int i)
-{
-	int	k;
-	t_token *current;
-
-	current = unit[i].start;
-	k = 0;
-	while (current)
-	{
-		if (current->value[0] == '<')
-		{
-			k++;
-			if (k == j)
-				break ;
-		}
-		current = current->next;
-	}
-	return (current);
 }
 
 int	save_input(t_exec_unit *unit, int i, char **my_envp, int j)
