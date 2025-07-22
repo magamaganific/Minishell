@@ -21,14 +21,14 @@ static int	is_delimiter(char *line, char *delim)
 }
 
 static void	write_heredoc(t_exec_unit *unit, int i, char **my_envp,
-	char *filename)
+	int j)
 {
 	int		fd_tmp;
 	char	*line;
 	t_token	*current;
 
-	current = unit[i].start;
-	fd_tmp = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	current = go_to_token(unit, j, i);
+	fd_tmp = open("/tmp/.heredoc_tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd_tmp < 0)
 		return (perror("minishell"));
 	while (!(current->value[0] == '<'))
@@ -53,20 +53,18 @@ static void	write_heredoc(t_exec_unit *unit, int i, char **my_envp,
 	exit_heredoc(&my_envp, &unit);
 }
 
-int	handle_heredoc(t_exec_unit *unit, int i, char **my_envp)
+int	handle_heredoc(t_exec_unit *unit, int i, char **my_envp, int j)
 {
 	int			fd_tmp;
 	int			status;
-	const char	*filename;
 	pid_t		pid;
 
-	filename = "/tmp/.heredoc_tmp";
 	pid = fork();
 	status = 0;
 	if (pid == -1)
 		return (-1);
 	if (pid == 0)
-		write_heredoc(unit, i, my_envp, (char *)filename);
+		write_heredoc(unit, i, my_envp, j);
 	signal(SIGINT, ft_handle_int_in_p);
 	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, 0);
@@ -76,7 +74,7 @@ int	handle_heredoc(t_exec_unit *unit, int i, char **my_envp)
 		g_signal.ret = 130;
 		return (-1);
 	}
-	fd_tmp = open(filename, O_RDONLY);
+	fd_tmp = open("/tmp/.heredoc_tmp", O_RDONLY);
 	if (fd_tmp < 0)
 		perror("minishell");
 	return (fd_tmp);
@@ -99,13 +97,33 @@ static int	open_input_file(char *filename)
 	return (fd_in);
 }
 
-int	save_input(t_exec_unit *unit, int i, char **my_envp)
+t_token	*go_to_token(t_exec_unit *unit, int j, int i)
+{
+	int	k;
+	t_token *current;
+
+	current = unit[i].start;
+	k = 0;
+	while (current)
+	{
+		if (current->value[0] == '<')
+		{
+			k++;
+			if (k == j)
+				break ;
+		}
+		current = current->next;
+	}
+	return (current);
+}
+
+int	save_input(t_exec_unit *unit, int i, char **my_envp, int j)
 {
 	t_token	*current;
 
-	current = unit[i].start;
-	while (!(current->value[0] == '<'))
-		current = current->next;
+	current = go_to_token(unit, j, i);
+	if (!current)
+		return (0);
 	if (!current->next)
 	{
 		error_syntax("newline");
@@ -117,7 +135,7 @@ int	save_input(t_exec_unit *unit, int i, char **my_envp)
 		return (-1);
 	}
 	if (!ft_strncmp(current->value, "<<", 2))
-		return (handle_heredoc(unit, i, my_envp));
+		return (handle_heredoc(unit, i, my_envp, j));
 	if (!ft_strncmp(current->value, "<", 1))
 		return (open_input_file(current->next->value));
 	return (-1);

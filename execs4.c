@@ -122,5 +122,5 @@ void	exec_simple_command(t_token *start, char **my_envp)
 	perror("minishell");
 	free_split(argv);
 	free(path);
-	return (free_token_list(start));
+	return ;
 }

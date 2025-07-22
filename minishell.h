@@ -73,8 +73,8 @@ void		append_token(t_token **head, t_token *new_tok);
 t_token		*tokenizer(char *cleaned);
 void		relativize_zones(t_token *tokens, char *cleaned);
 int			save_output(t_token *node);
-int			save_input(t_exec_unit *unit, int i, char **my_envp);
-int			handle_heredoc(t_exec_unit *unit, int i, char **my_envp);
+int			save_input(t_exec_unit *unit, int i, char **my_envp, int j);
+int			handle_heredoc(t_exec_unit *unit, int i, char **my_envp, int j);
 void		clean_tokens(t_token *tokens);
 int			is_invalid_redirect(char *value);
 char		*ft_strjoin_gnl(char *s1, char *s2, size_t len1, size_t len2);
@@ -91,6 +91,7 @@ int			not_in_zones(int i, t_zone *zone);
 int			in_token(char *value, char s);
 int			count_strings(char **envp);
 int			is_redirection(t_token *token);
+t_token		*go_to_token(t_exec_unit *unit, int j, int i);
 
 /* -------------- EJECUCIÓN ------------*/
 void		parse_and_execute_prompt(char *prompt, char ***envp);

@@ -22,6 +22,9 @@ void	exit_child(char	***my_envp, t_exec_unit **units)
 	close(STDOUT_FILENO);
 	close(2);
 	exit(127);
+	// 	close_fds(units);
+	// free_exec_units(units);
+	// free_token_list(command);
 }
 
 void	exit_heredoc(char	***my_envp, t_exec_unit **units)

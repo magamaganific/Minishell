@@ -55,15 +55,8 @@ void	free_split(char **split)
 
 void	free_exec_units(t_exec_unit *units)
 {
-	int	i;
-
 	if (!units)
 		return ;
-	i = 0;
-	while (units[i].start)
-	{
-		i++;
-	}
 	free(units);
 }
 

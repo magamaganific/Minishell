@@ -88,6 +88,7 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 	char		*cleaned;
 	t_token		*command;
 	t_exec_unit	*units;
+	t_token		*aux;
 
 	cleaned = preprocess_prompt(prompt);
 	if (!cleaned)
@@ -99,6 +100,7 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 		return ;
 	if (!check_end (units, command))
 		return ;
+	aux = units[0].start;
 	if (execute_built_in(units, my_envp))
 	{
 		close_fds(units);
@@ -106,6 +108,7 @@ void	parse_and_execute_prompt(char *prompt, char ***my_envp)
 		free_token_list(command);
 		return ;
 	}
+	units[0].start = aux;
 	execute_units_with_pipes(units, *my_envp);
 	close_fds(units);
 	free_exec_units(units);
