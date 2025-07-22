@@ -90,6 +90,8 @@ void	extract_variable_name(t_token *node, char **my_envp)
 				replace_variable(node, i, i + 2, ret);
 				i = i + 1;
 			}
+			else if (node->value[i + 1] == '"' || node->value[i + 1] == '\'')
+				replace_variable(node, i, i + 1, "");
 			else
 				i = find_variable(node, i, my_envp);
 			continue ;
